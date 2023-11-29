@@ -45,7 +45,7 @@
                         <ul class="control-icons d-flex gap-3">
                             <li><i class="fa-solid fa-circle-notch"></i></li>
                             <li><i class="fa-solid fa-message"></i></li>
-                            <li><i class="fa-solid fa-ellipsis-vertical"></i></li>
+                            <li><i class="fa-solid fa-ellipsis-vertical mx-1"></i></li>
                         </ul>
 
                     </div>
@@ -58,14 +58,18 @@
                     </div>
                     <div class="search-bar-container d-flex p-2">
                         <div class="search-bar d-flex align-items-center">
-                            <i class="fa-solid fa-magnifying-glass mx-4"></i>
-                            <input type="text" class="me-2" placeholder="Cerca o inizia una nuova chat">
+                            <div class="icon d-flex align-items-center">
+                                <i class="fa-solid fa-magnifying-glass mx-4"></i>
+                            </div>
+                            <div class="input d-flex align-items-center">
+                                <input type="text" class="mx-2" placeholder="Cerca o inizia una nuova chat">
+                            </div>
                         </div>
                     </div>
                     <ul class="contacts-list">
                         <li class="user-info d-flex py-2 ps-4 pe-2" v-for="(element, index) in contacts">
                             <div class="pic-container">
-                                <img :src="element.avatar" alt="">
+                                <img :src="element.avatar" :alt="`Avatar ${index + 1}`">
                             </div>
                             <div class="chat-info d-flex flex-column ms-3">
                                 <span class="user-name fw-bold">{{element.name}}</span>
@@ -77,10 +81,33 @@
                 </div>
                 <div class="col-right">
                     <div class="chat-board">
-                        <div class="sender-info"></div>
-                        <div class="messages-board"></div>
+                        <div class="sender-info d-flex align-items-center py-2 px-3">
+                            <div class="pic-container">
+                                <img src="./img/avatar_1.jpg" alt="Avatar 1">
+                            </div>
+                            <div class="chat-info d-flex flex-column ms-3">
+                                <span class="user-name fw-bold">Michele</span>
+                                <span class="last-access">Ultimo accesso oggi alle 12:00</span>
+                            </div>
+                            <ul class="control-icons d-flex gap-3">
+                                <li><i class="fa-solid fa-magnifying-glass"></i></li>
+                                <li><i class="fa-solid fa-paperclip"></i></li>
+                                <li><i class="fa-solid fa-ellipsis-vertical mx-1"></i></li>
+                            </ul>
+                        </div>
+                        <div class="messages-board d-flex justify-content-center align-items-center">
+                            <ul class="padded-container d-flex flex-column">
+                                <li class="sent">Hai portato a spasso il cane?</li>
+                                <li class="sent">Ricordati di stendere i panni</li>
+                                <li class="received">Tutto fatto!</li>
+                            </ul>
+                        </div>
                     </div>
-                    <div class="text-bar"></div>
+                    <div class="text-bar d-flex align-items-center">
+                        <i class="fa-regular fa-face-smile px-5"></i>
+                        <input type="text" placeholder="Scrivi un messaggio">
+                        <i class="fa-solid fa-microphone px-5"></i>
+                    </div>
                 </div>
             </div>
 

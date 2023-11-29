@@ -15,6 +15,10 @@ a {
     color: var(--link-color);
 }
 
+[v-cloak] {
+    display: none
+}
+
 /* #endregion RESET */
 
 /* #region TYPOGRAPHY */
@@ -27,6 +31,8 @@ a {
     --bg-chat: #E9EBEB;
     --bg-notification: #8edafa;
     --link-color: #3e7795;
+    --textbar-i-color: #6B7376;
+    --sent-bg: #D5F9BA;
 }
 
 body {
@@ -39,6 +45,22 @@ body {
 /* #endregion TYPOGRAPHY */
 
 /* #region COMMON */
+
+.received,
+.sent {
+    background-color: white;
+    padding: 15px;
+    border-radius: 10px;
+    width: 40%;
+    margin: 5px 0;
+
+
+}
+
+.sent {
+    background-color: var(--sent-bg);
+    align-self: flex-end;
+}
 
 /* #endregion COMMON */
 
@@ -79,14 +101,16 @@ body {
 }
 
 .main-container .dashboard .col-left .user-bar .user-info .pic-container,
-.main-container .dashboard .col-left .contacts-list .user-info .pic-container {
+.main-container .dashboard .col-left .contacts-list .user-info .pic-container,
+.main-container .dashboard .col-right .chat-board .sender-info .pic-container {
     width: 50px;
     height: 50px;
     border-radius: 50%;
     overflow: hidden;
 }
 
-.main-container .dashboard .col-left .user-bar .control-icons {
+.main-container .dashboard .col-left .user-bar .control-icons,
+.main-container .dashboard .col-right .sender-info .control-icons {
     color: var(--border-primary);
     font-size: 1.25rem;
 }
@@ -117,11 +141,21 @@ body {
     border-radius: 5px;
 }
 
-.main-container .dashboard .col-left .search-bar-container .search-bar i {
-    color: var(--border-primary);
+.main-container .dashboard .col-left .search-bar-container .search-bar .icon {
+    border-right: 1px solid var(--bg-chat);
+    height: 100%;
 }
 
-.main-container .dashboard .col-left .search-bar-container .search-bar input {
+.main-container .dashboard .col-left .search-bar-container .search-bar .icon .fa-magnifying-glass {
+    color: var(--border-primary);
+
+}
+
+.main-container .dashboard .col-left .search-bar-container .search-bar .input {
+    flex-grow: 1;
+}
+
+.main-container .dashboard .col-left .search-bar-container .search-bar .input input {
     width: 100%;
     font-size: 14px;
     border: none;
@@ -145,12 +179,14 @@ body {
     border-bottom: none;
 }
 
-.main-container .dashboard .col-left .contacts-list .chat-info {
+.main-container .dashboard .col-left .contacts-list .chat-info,
+.main-container .dashboard .col-right .chat-board .sender-info .chat-info {
     flex-grow: 1;
 }
 
 .main-container .dashboard .col-left .contacts-list .user-info .last-message,
-.main-container .dashboard .col-left .contacts-list .last-message-time {
+.main-container .dashboard .col-left .contacts-list .last-message-time,
+.main-container .dashboard .col-right .chat-board .sender-info .chat-info .last-access {
     color: var(--border-primary);
     font-size: 12px;
 }
@@ -164,6 +200,25 @@ body {
     height: calc(100% - 70px);
     overflow-y: scroll;
     background-image: url(../img/mine.jpg);
+}
+
+.main-container .dashboard .col-right .text-bar .fa-face-smile,
+.main-container .dashboard .col-right .text-bar .fa-microphone {
+    color: var(--textbar-i-color);
+    font-size: 1.5rem;
+}
+
+.main-container .dashboard .col-right .messages-board .padded-container {
+    width: 80%;
+    height: 90%;
+
+}
+
+.main-container .dashboard .col-right .text-bar input {
+    flex-grow: 1;
+    border-radius: 5px;
+    border: none;
+    padding: 14px;
 }
 
 /* #endregion MAIN */
