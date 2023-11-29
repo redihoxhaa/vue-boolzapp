@@ -1,0 +1,138 @@
+/* #region RESET*/
+
+ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+img {
+    width: 100%;
+    display: block;
+}
+
+a {
+    color: var(--link-color);
+}
+
+/* #endregion RESET */
+
+/* #region TYPOGRAPHY */
+
+:root {
+    --bg-primary: rgb(0, 151, 136);
+    --bg-secondary: rgba(222, 219, 210, 1);
+    --border-primary: #B1B1B1;
+    --bg-dashboard: #EAEAEA;
+    --bg-notification: #8edafa;
+    --link-color: #3e7795;
+}
+
+body {
+    font-family: 'Lato', sans-serif;
+    height: 100vh;
+    background: var(--bg-primary);
+    background: linear-gradient(180deg, var(--bg-primary) 20%, var(--bg-secondary) 20%);
+}
+
+/* #endregion TYPOGRAPHY */
+
+/* #region COMMON */
+
+/* #endregion COMMON */
+
+/* #region HEADER */
+
+
+
+/* #endregion HEADER */
+
+/* #region MAIN */
+
+.main-container {
+    height: 100vh;
+}
+
+.main-container .dashboard {
+    background-color: white;
+    height: 95vh;
+    width: 80vw;
+    background-color: var(--bg-dashboard);
+}
+
+.main-container .dashboard .col-left {
+    width: 35%;
+    height: 100%;
+    border-right: 1px solid var(--border-primary);
+}
+
+.main-container .dashboard .col-right {
+    width: 65%;
+    height: 100%
+}
+
+.main-container .dashboard .col-left .user-bar .user-info,
+.main-container .dashboard .col-right .chat-board .sender-info,
+.main-container .dashboard .col-right .text-bar {
+    height: 70px;
+}
+
+.main-container .dashboard .col-left .user-bar .user-info .pic-container {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    overflow: hidden;
+}
+
+.main-container .dashboard .col-left .user-bar .control-icons {
+    color: var(--border-primary);
+    font-size: 1.25rem;
+}
+
+.main-container .dashboard .col-left .notification-alert {
+    height: 80px;
+    background-color: var(--bg-notification);
+}
+
+.main-container .dashboard .col-left .notification-alert .fa-bell-slash {
+    background-color: white;
+    border-radius: 50%;
+    padding: 20px 18px;
+    color: var(--bg-notification);
+}
+
+.main-container .dashboard .col-left .notification-alert .notification-infos a {
+    font-size: 14px;
+}
+
+.main-container .dashboard .col-left .search-bar {
+    height: 50px;
+}
+
+.main-container .dashboard .col-left .contacts-list {
+    height: calc(100% - 200px);
+    background-color: white;
+    overflow-y: scroll;
+}
+
+.main-container .dashboard .col-right .chat-board {
+    height: calc(100% - 70px);
+}
+
+.main-container .dashboard .col-right .chat-board .messages-board {
+    height: calc(100% - 70px);
+    overflow-y: scroll;
+    background-image: url(../img/mine.jpg);
+}
+
+/* #endregion MAIN */
+
+/* #region FOOTER */
+
+
+
+/* #endregion FOOTER */
+
+/* #region MEDIA QUERIES */
+
+/* #endregion MEDIA QUERIES */
