@@ -68,15 +68,22 @@
                         </div>
                     </div>
                     <ul class="contacts-list">
-                        <li class="user-info d-flex py-2 ps-4 pe-2" v-for="(element, index) in contacts">
+                        <li v-for="(element, index) in contacts" class="user-info d-flex py-2 ps-4 pe-2"
+                            @click="showContact">
                             <div class="pic-container">
                                 <img :src="element.avatar" :alt="`Avatar ${index + 1}`">
                             </div>
                             <div class="chat-info d-flex flex-column ms-3">
                                 <span class="user-name fw-bold">{{element.name}}</span>
-                                <span class="last-message">Ultimo messaggio inviato</span>
+                                <div class="relative-wrap">
+                                    <span class="last-message absolute-wrap">{{element.messages[element.messages.length
+                                        -
+                                        1].message}}</span>
+                                </div>
+
                             </div>
-                            <div class="last-message-time">12:00</div>
+                            <div class="last-message-time">{{element.messages[element.messages.length -
+                                1].date.slice(11, -3)}}</div>
                         </li>
                     </ul>
                 </div>

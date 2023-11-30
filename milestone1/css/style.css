@@ -71,11 +71,28 @@ body {
     height: 50px;
     border-radius: 50%;
     overflow: hidden;
+    flex-shrink: 0;
 }
 
 .control-icons {
     color: var(--border-primary);
     font-size: 1.25rem;
+}
+
+.relative-wrap {
+    height: 1em;
+    position: relative;
+}
+
+.absolute-wrap {
+    position: absolute;
+    left: 0px;
+    right: 0px;
+    bottom: 0px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    top: 0px;
+    white-space: nowrap;
 }
 
 /* #endregion UTLITIES */
