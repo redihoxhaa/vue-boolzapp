@@ -64,11 +64,21 @@ body {
 
 /* #endregion COMMON */
 
-/* #region HEADER */
+/* #region UTILITIES */
 
+.pic-container {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    overflow: hidden;
+}
 
+.control-icons {
+    color: var(--border-primary);
+    font-size: 1.25rem;
+}
 
-/* #endregion HEADER */
+/* #endregion UTLITIES */
 
 /* #region MAIN */
 
@@ -92,27 +102,6 @@ body {
 .main-container .dashboard .col-right {
     width: 65%;
     height: 100%
-}
-
-.main-container .dashboard .col-left .user-bar .user-info,
-.main-container .dashboard .col-right .chat-board .sender-info,
-.main-container .dashboard .col-right .text-bar {
-    height: 70px;
-}
-
-.main-container .dashboard .col-left .user-bar .user-info .pic-container,
-.main-container .dashboard .col-left .contacts-list .user-info .pic-container,
-.main-container .dashboard .col-right .chat-board .sender-info .pic-container {
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
-    overflow: hidden;
-}
-
-.main-container .dashboard .col-left .user-bar .control-icons,
-.main-container .dashboard .col-right .sender-info .control-icons {
-    color: var(--border-primary);
-    font-size: 1.25rem;
 }
 
 .main-container .dashboard .col-left .notification-alert {
@@ -162,9 +151,10 @@ body {
 }
 
 .main-container .dashboard .col-left .contacts-list {
-    height: calc(100% - 200px);
+
     background-color: white;
     overflow-y: scroll;
+    flex-grow: 1;
 }
 
 .main-container .dashboard .col-left .contacts-list .user-info {
@@ -193,11 +183,11 @@ body {
 
 
 .main-container .dashboard .col-right .chat-board {
-    height: calc(100% - 70px);
+    flex-grow: 1;
 }
 
 .main-container .dashboard .col-right .chat-board .messages-board {
-    height: calc(100% - 70px);
+    flex-grow: 1;
     overflow-y: scroll;
     background-image: url(../img/mine.jpg);
 }

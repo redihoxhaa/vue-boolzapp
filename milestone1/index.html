@@ -35,9 +35,9 @@
     <div id="app" v-cloak>
         <div class="main-container d-flex justify-content-center align-items-center">
             <div class="dashboard d-flex">
-                <div class="col-left">
+                <div class="col-left d-flex flex-column">
                     <div class="user-bar d-flex justify-content-between align-items-center px-3">
-                        <div class="user-info d-flex align-items-center">
+                        <div class="user-info d-flex align-items-center py-2">
                             <div class="pic-container me-3">
                                 <img src="img/avatar_io.jpg" alt="">
                             </div>
@@ -50,7 +50,7 @@
                         </ul>
 
                     </div>
-                    <div class="notification-alert d-flex align-items-center p-3">
+                    <div class="notification-alert d-flex align-items-center px-3 py-4">
                         <i class="fa-solid fa-bell-slash"></i>
                         <div class="notification-infos d-flex flex-column ms-3">
                             <span class="fw-bold">Ricevi notifiche di nuovi messaggi</span>
@@ -80,8 +80,8 @@
                         </li>
                     </ul>
                 </div>
-                <div class="col-right">
-                    <div class="chat-board">
+                <div class="col-right d-flex flex-column">
+                    <div class="chat-board d-flex flex-column">
                         <div class="sender-info d-flex align-items-center py-2 px-3">
                             <div class="pic-container">
                                 <img src="./img/avatar_1.jpg" alt="Avatar 1">
@@ -104,7 +104,7 @@
                             </ul>
                         </div>
                     </div>
-                    <div class="text-bar d-flex align-items-center">
+                    <div class="text-bar d-flex align-items-center py-2">
                         <i class="fa-regular fa-face-smile px-5"></i>
                         <input type="text" placeholder="Scrivi un messaggio">
                         <i class="fa-solid fa-microphone px-5"></i>
