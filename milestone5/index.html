@@ -90,12 +90,13 @@
                                 <div class="chat-info d-flex flex-column ms-3">
                                     <span class="user-name fw-bold">{{element.name}}</span>
                                     <div class="relative-wrap">
-                                        <span
-                                            class="last-message absolute-wrap">{{element.messages[element.messages.length
+                                        <span class="last-message absolute-wrap"
+                                            v-if="contacts[currentContactIndex].messages.length > 0">{{element.messages[element.messages.length
                                             - 1].message}}</span>
                                     </div>
                                 </div>
-                                <div class="last-message-time">{{extractTime(element.messages[element.messages.length
+                                <div class="last-message-time" v-if="contacts[currentContactIndex].messages.length > 0">
+                                    {{extractTime(element.messages[element.messages.length
                                     - 1].date)}}
                                 </div>
                             </div>
@@ -118,7 +119,8 @@
                         </div>
                         <div class="chat-info d-flex flex-column ms-3">
                             <span class="user-name fw-bold">{{contacts[currentContactIndex].name}}</span>
-                            <span class="last-access">Ultimo accesso oggi alle
+                            <span class="last-access" v-if="contacts[currentContactIndex].messages.length > 0">Ultimo
+                                accesso oggi alle
                                 {{extractTime(contacts[currentContactIndex].messages[contacts[currentContactIndex].messages.length
                                 - 1].date)}}
                             </span>
@@ -133,10 +135,10 @@
 
                     <!-- Board dei messaggi inviati e ricevuti -->
                     <div class="messages-board d-flex align-items-center justify-content-center">
-                        <ul class="padded-container d-flex flex-column">
+                        <ul class="padded-container d-flex flex-column align-item"
+                            v-if="contacts[currentContactIndex].messages.length > 0">
                             <li v-for="(element, index) in contacts[currentContactIndex].messages" class="message"
-                                :class="element.status === 'received' ? 'received' : 'sent'"
-                                v-if="contacts[currentContactIndex].messages.length > 0">
+                                :class="element.status === 'received' ? 'received' : 'sent'">
                                 {{element.message}}
                                 <div class="current-message-time">
                                     {{extractTime(element.date)}}
@@ -152,8 +154,9 @@
                                     :class="element.status === 'received' ? 'received-overlay' : 'sent-overlay'"></div>
                                 <i class="fa-solid fa-chevron-down" @click="showOptions(index)"></i>
                             </li>
-                            <li v-else>Non hai messaggi da visualizzare</li>
+
                         </ul>
+                        <div v-else>Non hai messaggi da visualizzare</div>
 
                     </div>
                     <!-- /Board dei messaggi inviati e ricevuti -->
