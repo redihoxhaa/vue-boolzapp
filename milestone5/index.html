@@ -81,21 +81,23 @@
 
                     <!-- Lista contatti e chat -->
                     <ul class="contacts-list">
-                        <li v-for="(element, index) in filteredContacts()" class="user-info d-flex py-2 ps-4 pe-2"
-                            :class="{active: currentContactIndex === index}" @click="showContact(index)">
-                            <div class="pic-container">
-                                <img :src="element.avatar" :alt="`Avatar ${index + 1}`">
-                            </div>
-                            <div class="chat-info d-flex flex-column ms-3">
-                                <span class="user-name fw-bold">{{element.name}}</span>
-                                <div class="relative-wrap">
-                                    <span class="last-message absolute-wrap">{{element.messages[element.messages.length
-                                        - 1].message}}</span>
+                        <li v-for="(element, index) in filteredContacts()" class="user-info"
+                            :class="{active: currentContactIndex === index}" @click="showContact(element.index)">
+                            <div class="visibility-wrapper d-flex py-2 ps-4 pe-2" v-show="element.visible">
+                                <div class="pic-container">
+                                    <img :src="element.avatar" :alt="`Avatar ${index + 1}`">
                                 </div>
-
-                            </div>
-                            <div class="last-message-time">{{extractTime(element.messages[element.messages.length
-                                - 1].date)}}
+                                <div class="chat-info d-flex flex-column ms-3">
+                                    <span class="user-name fw-bold">{{element.name}}</span>
+                                    <div class="relative-wrap">
+                                        <span
+                                            class="last-message absolute-wrap">{{element.messages[element.messages.length
+                                            - 1].message}}</span>
+                                    </div>
+                                </div>
+                                <div class="last-message-time">{{extractTime(element.messages[element.messages.length
+                                    - 1].date)}}
+                                </div>
                             </div>
                         </li>
                     </ul>
@@ -130,26 +132,29 @@
                     <!-- /Info dell'Contacte -->
 
                     <!-- Board dei messaggi inviati e ricevuti -->
-                    <div class="messages-board d-flex justify-content-center align-items-center">
-                        <ul class="padded-container d-flex flex-column"
-                            v-if="contacts[currentContactIndex].messages.length > 0">
+                    <div class="messages-board d-flex align-items-center justify-content-center">
+                        <ul class="padded-container d-flex flex-column">
                             <li v-for="(element, index) in contacts[currentContactIndex].messages" class="message"
                                 :class="element.status === 'received' ? 'received' : 'sent'"
-                                @click="showOptions(index)">
+                                v-if="contacts[currentContactIndex].messages.length > 0">
                                 {{element.message}}
                                 <div class="current-message-time">
                                     {{extractTime(element.date)}}
                                 </div>
-                                <ul class="message-options d-flex flex-column justify-content-center d-none">
-                                    <li class="mb-3">Message Info</li>
-                                    <li @click.stop="deleteMessage(index)">Delete message</li>
-                                </ul>
+                                <div v-show="optionShower" class="message-options">
+                                    <ul class="options-wrapper d-flex flex-column justify-content-center">
+                                        <li class="mb-3">Message Info</li>
+                                        <li @click.stop="deleteMessage(index)">Delete message</li>
+                                    </ul>
+
+                                </div>
                                 <div class="background-overlay"
                                     :class="element.status === 'received' ? 'received-overlay' : 'sent-overlay'"></div>
-                                <i class="fa-solid fa-chevron-down"></i>
+                                <i class="fa-solid fa-chevron-down" @click="showOptions(index)"></i>
                             </li>
+                            <li v-else>Non hai messaggi da visualizzare</li>
                         </ul>
-                        <div v-else>Non hai messaggi da visualizzare</div>
+
                     </div>
                     <!-- /Board dei messaggi inviati e ricevuti -->
 

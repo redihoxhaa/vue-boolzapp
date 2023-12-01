@@ -6,6 +6,9 @@ const { createApp } = Vue;
 createApp({
     data() {
         return {
+            mappedContactList: [],
+            optionShower: false,
+            currentMessageIndex: null,
             currentContactIndex: 0,
             newMessageText: null,
             searchModel: '',
@@ -200,40 +203,37 @@ createApp({
             return time;
         },
 
+        mapContacts() {
+            this.mappedContactList = this.contacts.map((contact, index) => {
+                const originalIndex = index;
+                contact.index = originalIndex;
+                return contact
+            });
+        },
+
         filteredContacts() {
             if (this.searchModel.trim() !== '') {
-                return this.contacts.filter((contact) =>
-                    contact.name.toLowerCase().includes(this.searchModel.toLowerCase())
-                );
+                const filteredContactList = this.mappedContactList.filter((contact) =>
+                    contact.name.toLowerCase().includes(this.searchModel.toLowerCase()));
+                console.log(filteredContactList);
+                return filteredContactList
             } else {
-                return this.contacts;
+                return this.mappedContactList;
             }
         },
 
         showOptions(index) {
-            const messageToDelete = document.querySelectorAll(".message-options")[index]
-            messageToDelete.classList.toggle("d-none");
+            this.currentMessageIndex = index;
+            this.optionShower = !this.optionShower;
         },
 
         deleteMessage(index) {
             this.contacts[this.currentContactIndex].messages.splice(index, 1);
         },
 
-        /*         timeShower() {
-                    const newArray = this.contacts.map(element => element.messages);
-                    console.log(newArray);
-                    const workedArray = newArray.map(element => element);
-                    console.log(workedArray);
-                    const filteredArray = workedArray.filter(element => element.status === "received");
-                    console.log(filteredArray);
-                    return filteredArray
-                        ;
-                } */
-
-
     },
 
     mounted() {
-
+        this.mapContacts()
     }
 }).mount('#app')

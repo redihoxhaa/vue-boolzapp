@@ -112,6 +112,7 @@ body {
     background-color: white;
     border-radius: 5px;
     box-shadow: 1px 1px 10px rgba(0, 0, 0, 0.2);
+    cursor: pointer;
 
 }
 
@@ -237,6 +238,7 @@ body {
     flex-grow: 1;
     overflow-y: scroll;
     background-image: url(../img/mine.jpg);
+    padding-bottom: 30px;
 }
 
 .main-container .dashboard .col-right .text-bar .fa-face-smile,
@@ -282,6 +284,7 @@ body {
     color: gray;
     opacity: 0;
     transition: opacity 0.1s;
+    cursor: pointer;
 
 }
 
