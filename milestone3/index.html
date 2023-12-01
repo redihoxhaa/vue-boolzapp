@@ -93,7 +93,8 @@
                                 </div>
 
                             </div>
-                            <div class="last-message-time">{{HHmm}}</div>
+                            <div class="last-message-time">{{extractTime(element.messages[element.messages.length
+                                - 1].date)}}</div>
                         </li>
                     </ul>
                     <!-- /Lista contatti e chat -->
@@ -114,7 +115,9 @@
                             </div>
                             <div class="chat-info d-flex flex-column ms-3">
                                 <span class="user-name fw-bold">{{contacts[currentInterlocutorIndex].name}}</span>
-                                <span class="last-access">Ultimo accesso oggi alle {{HHmm}}
+                                <span class="last-access">Ultimo accesso oggi alle
+                                    {{extractTime(contacts[currentInterlocutorIndex].messages[contacts[currentInterlocutorIndex].messages.length
+                                    - 1].date)}}
                                 </span>
                             </div>
                             <ul class="control-icons d-flex gap-3">
@@ -132,7 +135,8 @@
                                     :class="element.status === 'received' ? 'received' : 'sent'">
                                     {{element.message}}
                                     <div class="current-message-time">
-                                        {{HHmm}}</div>
+                                        {{extractTime(element.date)}}
+                                    </div>
                                 </li>
                             </ul>
                         </div>

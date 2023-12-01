@@ -8,7 +8,6 @@ createApp({
         return {
             currentInterlocutorIndex: 0,
             newMessageText: null,
-            HHmm: null,
             contacts: [
 
                 {
@@ -183,8 +182,9 @@ createApp({
 
         sendMessage(message, status) {
             const newMessage = {};
-            newMessage.date = new Date();
-            this.HHmm = `${newMessage.date.getHours()}:${newMessage.date.getMinutes()}`;
+            const dt = new Date();
+            const padL = (nr, len = 2, chr = `0`) => `${nr}`.padStart(2, chr);
+            newMessage.date = `${padL(dt.getMonth() + 1)}/${padL(dt.getDate())}/${dt.getFullYear()} ${padL(dt.getHours())}:${padL(dt.getMinutes())}:${padL(dt.getSeconds())}`;
             newMessage.message = message;
             newMessage.status = status;
             this.contacts[this.currentInterlocutorIndex].messages.push(newMessage);
@@ -193,6 +193,12 @@ createApp({
                 setTimeout(function () { this.sendMessage('Ok', 'received') }.bind(this), 1000)
             }
         },
+
+        extractTime(actualDate) {
+            const time = actualDate.slice(11, -3);
+            return time;
+        },
+
     },
     mounted() {
     }
