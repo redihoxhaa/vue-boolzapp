@@ -73,7 +73,7 @@
                             </div>
                             <div class="input d-flex align-items-center">
                                 <input type="text" class="mx-2" placeholder="Cerca o inizia una nuova chat"
-                                    v-model="searchModel" @keyup.enter="filteredTask()">
+                                    v-model="searchModel" @keyup.enter="filteredContacts()">
                             </div>
                         </div>
                     </section>
@@ -82,7 +82,7 @@
                     <!-- Lista contatti e chat -->
                     <ul class="contacts-list">
                         <li v-for="(element, index) in filteredContacts()" class="user-info d-flex py-2 ps-4 pe-2"
-                            @click="showContact(index)">
+                            :class="{active: currentContactIndex === index}" @click="showContact(index)">
                             <div class="pic-container">
                                 <img :src="element.avatar" :alt="`Avatar ${index + 1}`">
                             </div>
@@ -95,7 +95,8 @@
 
                             </div>
                             <div class="last-message-time">{{extractTime(element.messages[element.messages.length
-                                - 1].date)}}</div>
+                                - 1].date)}}
+                            </div>
                         </li>
                     </ul>
                     <!-- /Lista contatti e chat -->
@@ -105,53 +106,52 @@
                 <!-- Colonna destra dashboard -->
                 <div class="col-right d-flex flex-column">
 
-                    <!-- Chat board -->
-                    <div class="chat-board d-flex flex-column">
 
-                        <!-- Info dell'interlocutore -->
-                        <div class="interlocutor-info d-flex align-items-center py-2 px-3">
-                            <div class="pic-container">
-                                <img :src="contacts[currentInterlocutorIndex].avatar"
-                                    :alt="'Avatar ${contacts[currentInterlocutorIndex].name}'">
-                            </div>
-                            <div class="chat-info d-flex flex-column ms-3">
-                                <span class="user-name fw-bold">{{contacts[currentInterlocutorIndex].name}}</span>
-                                <span class="last-access">Ultimo accesso oggi alle
-                                    {{extractTime(contacts[currentInterlocutorIndex].messages[contacts[currentInterlocutorIndex].messages.length
-                                    - 1].date)}}
-                                </span>
-                            </div>
-                            <ul class="control-icons d-flex gap-3">
-                                <li><i class="fa-solid fa-magnifying-glass"></i></li>
-                                <li><i class="fa-solid fa-paperclip"></i></li>
-                                <li><i class="fa-solid fa-ellipsis-vertical mx-1"></i></li>
-                            </ul>
+
+                    <!-- Info dell'Contacte -->
+                    <div class="contact-info d-flex align-items-center py-2 px-3">
+                        <div class="pic-container">
+                            <img :src="contacts[currentContactIndex].avatar"
+                                :alt="'Avatar ${contacts[currentContactIndex].name}'">
                         </div>
-                        <!-- /Info dell'interlocutore -->
-
-                        <!-- Board dei messaggi inviati e ricevuti -->
-                        <div class="messages-board d-flex justify-content-center align-items-center">
-                            <ul class="padded-container d-flex flex-column"
-                                v-if="contacts[currentInterlocutorIndex].messages.length > 0">
-                                <li v-for="(element, index) in contacts[currentInterlocutorIndex].messages"
-                                    :class="element.status === 'received' ? 'received' : 'sent'"
-                                    @click="showOptions(index)">
-                                    {{element.message}}
-                                    <div class="current-message-time">
-                                        {{extractTime(element.date)}}
-                                    </div>
-                                    <ul class="options d-flex flex-column justify-content-center d-none">
-                                        <li class="mb-3">Message Info</li>
-                                        <li @click="deleteMessage(index)">Delete message</li>
-                                    </ul>
-                                </li>
-                            </ul>
-                            <div v-else>Non hai messaggi da visualizzare</div>
+                        <div class="chat-info d-flex flex-column ms-3">
+                            <span class="user-name fw-bold">{{contacts[currentContactIndex].name}}</span>
+                            <span class="last-access">Ultimo accesso oggi alle
+                                {{extractTime(contacts[currentContactIndex].messages[contacts[currentContactIndex].messages.length
+                                - 1].date)}}
+                            </span>
                         </div>
-                        <!-- /Board dei messaggi inviati e ricevuti -->
-
+                        <ul class="control-icons d-flex gap-3">
+                            <li><i class="fa-solid fa-magnifying-glass"></i></li>
+                            <li><i class="fa-solid fa-paperclip"></i></li>
+                            <li><i class="fa-solid fa-ellipsis-vertical mx-1"></i></li>
+                        </ul>
                     </div>
-                    <!-- /Chat board -->
+                    <!-- /Info dell'Contacte -->
+
+                    <!-- Board dei messaggi inviati e ricevuti -->
+                    <div class="messages-board d-flex justify-content-center align-items-center">
+                        <ul class="padded-container d-flex flex-column"
+                            v-if="contacts[currentContactIndex].messages.length > 0">
+                            <li v-for="(element, index) in contacts[currentContactIndex].messages" class="message"
+                                :class="element.status === 'received' ? 'received' : 'sent'"
+                                @click="showOptions(index)">
+                                {{element.message}}
+                                <div class="current-message-time">
+                                    {{extractTime(element.date)}}
+                                </div>
+                                <ul class="message-options d-flex flex-column justify-content-center d-none">
+                                    <li class="mb-3">Message Info</li>
+                                    <li @click.stop="deleteMessage(index)">Delete message</li>
+                                </ul>
+                                <div class="background-overlay"
+                                    :class="element.status === 'received' ? 'received-overlay' : 'sent-overlay'"></div>
+                                <i class="fa-solid fa-chevron-down"></i>
+                            </li>
+                        </ul>
+                        <div v-else>Non hai messaggi da visualizzare</div>
+                    </div>
+                    <!-- /Board dei messaggi inviati e ricevuti -->
 
                     <!-- Input per messaggio -->
                     <div class="text-bar d-flex align-items-center py-2">

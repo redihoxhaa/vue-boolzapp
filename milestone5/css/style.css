@@ -61,6 +61,14 @@ body {
     align-self: flex-end;
 }
 
+.received-overlay {
+    background: linear-gradient(90deg, rgba(52, 52, 52, 0) 70%, white 85%);
+}
+
+.sent-overlay {
+    background: linear-gradient(90deg, rgba(52, 52, 52, 0) 70%, var(--sent-bg) 85%);
+}
+
 /* #endregion COMMON */
 
 /* #region UTILITIES */
@@ -71,6 +79,10 @@ body {
     border-radius: 50%;
     overflow: hidden;
     flex-shrink: 0;
+}
+
+.pic-container img {
+    object-fit: cover;
 }
 
 .control-icons {
@@ -91,7 +103,7 @@ body {
     white-space: nowrap;
 }
 
-.options {
+.message-options {
     position: absolute;
     bottom: -90px;
     right: 30px;
@@ -143,6 +155,7 @@ body {
 
 .main-container .dashboard .col-left .notification-alert .notification-infos a {
     font-size: 14px;
+    display: inline-block;
 }
 
 .main-container .dashboard .col-left .search-bar-container {
@@ -152,7 +165,7 @@ body {
 .main-container .dashboard .col-left .search-bar-container .search-bar {
     background-color: white;
     width: 100%;
-    border-radius: 5px;
+    border-radius: 0 2px 2px 0;
 }
 
 .main-container .dashboard .col-left .search-bar-container .search-bar .icon {
@@ -173,6 +186,9 @@ body {
     width: 100%;
     font-size: 14px;
     border: none;
+    display: block;
+    height: 100%;
+    outline: 0;
 }
 
 .main-container .dashboard .col-left .contacts-list {
@@ -184,6 +200,7 @@ body {
 
 .main-container .dashboard .col-left .contacts-list .user-info {
     border-bottom: 1px solid var(--bg-dashboard);
+    cursor: pointer;
 }
 
 .main-container .dashboard .col-left .contacts-list .user-info .user-name {
@@ -200,23 +217,23 @@ body {
 }
 
 .main-container .dashboard .col-left .contacts-list .chat-info,
-.main-container .dashboard .col-right .chat-board .interlocutor-info .chat-info {
+.main-container .dashboard .col-right .contact-info .chat-info {
     flex-grow: 1;
 }
 
 .main-container .dashboard .col-left .contacts-list .user-info .last-message,
 .main-container .dashboard .col-left .contacts-list .last-message-time,
-.main-container .dashboard .col-right .chat-board .interlocutor-info .chat-info .last-access {
+.main-container .dashboard .col-right .contact-info .chat-info .last-access {
     color: var(--border-primary);
     font-size: 12px;
 }
 
-
-.main-container .dashboard .col-right .chat-board {
-    flex-grow: 1;
+.main-container .dashboard .col-left .contacts-list .user-info .pic-container {
+    width: 60px;
+    height: 60px;
 }
 
-.main-container .dashboard .col-right .chat-board .messages-board {
+.main-container .dashboard .col-right .messages-board {
     flex-grow: 1;
     overflow-y: scroll;
     background-image: url(../img/mine.jpg);
@@ -234,11 +251,38 @@ body {
 
 }
 
-.main-container .dashboard .col-right .messages-board .padded-container li .current-message-time {
+.main-container .dashboard .col-right .messages-board .padded-container .message .current-message-time {
     font-size: .625rem;
     text-align: end;
     color: var(--border-primary);
     padding: 5px 0;
+}
+
+.main-container .dashboard .col-right .messages-board .padded-container .message .background-overlay {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    border-radius: 10px;
+    top: 0;
+    right: 0;
+    opacity: 0;
+    transition: opacity 0.1s;
+}
+
+.main-container .dashboard .col-right .messages-board .padded-container .message:hover .background-overlay,
+.main-container .dashboard .col-right .messages-board .padded-container .message:hover .fa-chevron-down {
+    opacity: 1;
+}
+
+.main-container .dashboard .col-right .messages-board .padded-container .message .fa-chevron-down {
+    position: absolute;
+    right: 5px;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    color: gray;
+    opacity: 0;
+    transition: opacity 0.1s;
+
 }
 
 .main-container .dashboard .col-right .text-bar input {
@@ -246,6 +290,9 @@ body {
     border-radius: 5px;
     border: none;
     padding: 14px;
+    display: block;
+    height: 100%;
+    outline: 0;
 }
 
 /* #endregion MAIN */

@@ -6,7 +6,7 @@ const { createApp } = Vue;
 createApp({
     data() {
         return {
-            currentInterlocutorIndex: 0,
+            currentContactIndex: 0,
             newMessageText: null,
             searchModel: '',
             contacts: [
@@ -178,7 +178,7 @@ createApp({
     },
     methods: {
         showContact(index) {
-            this.currentInterlocutorIndex = index;
+            this.currentContactIndex = index;
         },
 
         sendMessage(message, status) {
@@ -188,7 +188,7 @@ createApp({
             newMessage.date = `${padL(dt.getMonth() + 1)}/${padL(dt.getDate())}/${dt.getFullYear()} ${padL(dt.getHours())}:${padL(dt.getMinutes())}:${padL(dt.getSeconds())}`;
             newMessage.message = message;
             newMessage.status = status;
-            this.contacts[this.currentInterlocutorIndex].messages.push(newMessage);
+            this.contacts[this.currentContactIndex].messages.push(newMessage);
             this.newMessageText = null;
             if (status === 'sent') {
                 setTimeout(function () { this.sendMessage('Ok', 'received') }.bind(this), 1000)
@@ -211,17 +211,29 @@ createApp({
         },
 
         showOptions(index) {
-            const messageToDelete = document.querySelectorAll(".options")[index]
-            messageToDelete.classList.toggle("d-block");
+            const messageToDelete = document.querySelectorAll(".message-options")[index]
             messageToDelete.classList.toggle("d-none");
-
         },
 
         deleteMessage(index) {
-            this.contacts[this.currentInterlocutorIndex].messages.splice(index, 1);
-        }
+            this.contacts[this.currentContactIndex].messages.splice(index, 1);
+        },
+
+        /*         timeShower() {
+                    const newArray = this.contacts.map(element => element.messages);
+                    console.log(newArray);
+                    const workedArray = newArray.map(element => element);
+                    console.log(workedArray);
+                    const filteredArray = workedArray.filter(element => element.status === "received");
+                    console.log(filteredArray);
+                    return filteredArray
+                        ;
+                } */
+
+
     },
 
     mounted() {
+
     }
 }).mount('#app')
