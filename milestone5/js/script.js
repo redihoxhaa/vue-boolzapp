@@ -7,7 +7,7 @@ createApp({
     data() {
         return {
             mappedContactList: [],
-            optionShower: false,
+            optionShower: [],
             currentMessageIndex: null,
             currentContactIndex: 0,
             newMessageText: null,
@@ -182,6 +182,7 @@ createApp({
     methods: {
         showContact(index) {
             this.currentContactIndex = index;
+            this.createStates();
         },
 
         sendMessage(message, status) {
@@ -222,18 +223,29 @@ createApp({
             }
         },
 
+        createStates() {
+            this.optionShower = [];
+            this.contacts[this.currentContactIndex].messages.forEach((message, index) => {
+                const state = false;
+                this.optionShower.push(state);
+            })
+        },
+
         showOptions(index) {
             this.currentMessageIndex = index;
-            this.optionShower = !this.optionShower;
+            this.optionShower[index] = !this.optionShower[index];
+
         },
 
         deleteMessage(index) {
             this.contacts[this.currentContactIndex].messages.splice(index, 1);
+            this.createStates();
         },
 
     },
 
     mounted() {
-        this.mapContacts()
+        this.mapContacts();
+        this.createStates();
     }
 }).mount('#app')

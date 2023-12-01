@@ -110,7 +110,7 @@
 
 
 
-                    <!-- Info dell'Contacte -->
+                    <!-- Info del contact -->
                     <div class="contact-info d-flex align-items-center py-2 px-3">
                         <div class="pic-container">
                             <img :src="contacts[currentContactIndex].avatar"
@@ -129,7 +129,7 @@
                             <li><i class="fa-solid fa-ellipsis-vertical mx-1"></i></li>
                         </ul>
                     </div>
-                    <!-- /Info dell'Contacte -->
+                    <!-- /Info del contact -->
 
                     <!-- Board dei messaggi inviati e ricevuti -->
                     <div class="messages-board d-flex align-items-center justify-content-center">
@@ -141,7 +141,7 @@
                                 <div class="current-message-time">
                                     {{extractTime(element.date)}}
                                 </div>
-                                <div v-show="optionShower" class="message-options">
+                                <div v-show="optionShower[index]" class="message-options">
                                     <ul class="options-wrapper d-flex flex-column justify-content-center">
                                         <li class="mb-3">Message Info</li>
                                         <li @click.stop="deleteMessage(index)">Delete message</li>
