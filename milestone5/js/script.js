@@ -3,15 +3,30 @@
 const { createApp } = Vue;
 
 
+
 createApp({
     data() {
         return {
+            leftColShow: true,
+            rightColShow: true,
             mappedContactList: [],
             optionShower: [],
             currentMessageIndex: null,
             currentContactIndex: 0,
-            newMessageText: null,
+            newMessageText: "",
             searchModel: '',
+            randomQuotes: [
+                "Il cielo è limpido stasera, guardalo!",
+                "Ho finalmente imparato a fare sushi! Tu hai qualche piatto preferito?",
+                "Hai visto l'ultima mostra d'arte contemporanea? È stata incredibile!",
+                "Mi sto dedicando alla fotografia di paesaggi. Qual è il tuo soggetto preferito da fotografare?",
+                "Ho corso una maratona questo weekend. Tu pratichi sport?",
+                "Sto ascoltando musica classica per rilassarmi. Che genere di musica preferisci?",
+                "Sto leggendo un libro di fantascienza che mi sta catturando. Hai letto qualcosa di interessante ultimamente?",
+                "Ho comprato un telescopio per osservare le stelle. Hai mai guardato il cielo notturno?",
+                "Mi sto cimentando nell'arte del giardinaggio. Ti piace prenderti cura delle piante?",
+                "Ho iniziato un corso online su programmazione. Ti interessa la tecnologia?"
+            ],
             contacts: [
 
                 {
@@ -180,6 +195,7 @@ createApp({
 
     },
     methods: {
+
         showContact(index) {
             this.currentContactIndex = index;
             this.createStates();
@@ -187,16 +203,22 @@ createApp({
 
         sendMessage(message, status) {
             const newMessage = {};
-            const dt = new Date();
-            const padL = (nr, len = 2, chr = `0`) => `${nr}`.padStart(2, chr);
-            newMessage.date = `${padL(dt.getMonth() + 1)}/${padL(dt.getDate())}/${dt.getFullYear()} ${padL(dt.getHours())}:${padL(dt.getMinutes())}:${padL(dt.getSeconds())}`;
-            newMessage.message = message;
-            newMessage.status = status;
-            this.contacts[this.currentContactIndex].messages.push(newMessage);
-            this.newMessageText = null;
-            if (status === 'sent') {
-                setTimeout(function () { this.sendMessage('Ok', 'received') }.bind(this), 1000)
+            if (message.trim() !== '') {
+                const dt = new Date();
+                const padL = (nr, len = 2, chr = `0`) => `${nr}`.padStart(2, chr);
+                newMessage.date = `${padL(dt.getMonth() + 1)}/${padL(dt.getDate())}/${dt.getFullYear()} ${padL(dt.getHours())}:${padL(dt.getMinutes())}:${padL(dt.getSeconds())}`;
+                newMessage.message = message;
+                newMessage.status = status;
+                this.contacts[this.currentContactIndex].messages.push(newMessage);
+                this.newMessageText = "";
+                setTimeout(function () { this.scrollToBottom() }.bind(this), 10)
+
+                if (status === 'sent') {
+                    setTimeout(function () { this.sendMessage(this.randomQuotes[Math.floor(Math.random() * 10)], 'received') }.bind(this), 1000)
+                }
+
             }
+
         },
 
         extractTime(actualDate) {
@@ -212,10 +234,17 @@ createApp({
             });
         },
 
+
+        scrollToBottom() {
+            const latestMessage = document.querySelector(".latest-message");
+            latestMessage.scrollIntoView({ behavior: 'smooth', block: 'end', inline: 'nearest' });
+        }
+        ,
+
         filteredContacts() {
             if (this.searchModel.trim() !== '') {
                 const filteredContactList = this.mappedContactList.filter((contact) =>
-                    contact.name.toLowerCase().includes(this.searchModel.toLowerCase()));
+                    contact.name.toLowerCase().startsWith(this.searchModel.toLowerCase()));
                 console.log(filteredContactList);
                 return filteredContactList
             } else {
