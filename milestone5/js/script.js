@@ -7,8 +7,11 @@ const { createApp } = Vue;
 createApp({
     data() {
         return {
+            appTheme: "light-theme",
+            welcomeMessageHider: false,
+            splashScreenHider: false,
             leftColShow: true,
-            rightColShow: true,
+            rightColShow: false,
             mappedContactList: [],
             optionShower: [],
             currentMessageIndex: null,
@@ -196,9 +199,27 @@ createApp({
     },
     methods: {
 
+        changeTheme() {
+            if (this.appTheme === "light-theme") {
+                this.appTheme = "dark-theme"
+            }
+            else {
+                this.appTheme = "light-theme"
+            }
+        },
+
+        hideSplashScreen() {
+            this.splashScreenHider = true;
+        },
+
+        hideWelcomeMessage() {
+            this.welcomeMessageHider = true;
+        },
+
         showContact(index) {
             this.currentContactIndex = index;
             this.createStates();
+            this.welcomeMessage = false;
         },
 
         sendMessage(message, status) {
@@ -219,6 +240,22 @@ createApp({
 
             }
 
+        },
+
+        backToList() {
+            if (window.matchMedia('only screen and (max-width: 992px)').matches) {
+                this.leftColShow = !this.leftColShow;
+                this.rightColShow = !this.rightColShow;
+            }
+        },
+
+        adaptToScreen() {
+            if (window.matchMedia('only screen and (min-width: 992px)').matches) {
+                this.rightColShow = true;
+
+            } else {
+                this.rightColShow = false;
+            }
         },
 
         extractTime(actualDate) {
@@ -274,7 +311,10 @@ createApp({
     },
 
     mounted() {
+        this.adaptToScreen();
+        window.addEventListener('resize', this.adaptToScreen);
         this.mapContacts();
         this.createStates();
+        setTimeout(this.hideSplashScreen, 1000)
     }
 }).mount('#app')
