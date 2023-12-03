@@ -234,18 +234,17 @@
                                         <div class="current-message-time">
                                             {{extractTime(element.date)}}
                                         </div>
-                                        <div v-show="optionShower[index]" class="message-options">
+                                        <div v-show="optionMessageShower[index]" class="message-options">
                                             <ul class="options-wrapper d-flex flex-column justify-content-center">
                                                 <li class="mb-3">Message Info</li>
                                                 <li @click.stop="deleteMessage(index);">Delete
                                                     message</li>
                                             </ul>
-
                                         </div>
                                         <div class="background-overlay"
                                             :class="element.status === 'received' ? 'received-overlay' : 'sent-overlay'">
                                         </div>
-                                        <i class="fa-solid fa-chevron-down" @click="showOptions(index)"></i>
+                                        <i class="fa-solid fa-chevron-down" @click="showMessageOptions(index)"></i>
                                     </li>
                                     <li class="where-is-the-bottom"></li>
                                 </ul>

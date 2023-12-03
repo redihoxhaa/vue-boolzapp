@@ -2,8 +2,6 @@
 
 const { createApp } = Vue;
 
-
-
 createApp({
     data() {
         return {
@@ -21,7 +19,7 @@ createApp({
             leftColShow: true,
             rightColShow: false,
             mappedContactList: [],
-            optionShower: [],
+            optionMessageShower: [],
             currentMessageIndex: null,
             currentContactIndex: 0,
             newMessageText: "",
@@ -207,55 +205,161 @@ createApp({
     },
     methods: {
 
-        changeTheme() {
-            if (this.appTheme === "light-theme") {
-                this.appTheme = "dark-theme"
-            }
-            else {
-                this.appTheme = "light-theme"
+        // Check sul viewport per mostrare gli elementi corretti
+        adaptToScreen() {
+            if (window.matchMedia('only screen and (min-width: 992px)').matches) {
+                this.rightColShow = true;
+                this.leftColShow = true;
+            } else {
+                if (this.areYouInChatMobile === true) {
+                    this.rightColShow = true;
+                    this.leftColShow = false;
+                } else {
+                    this.rightColShow = false;
+                }
             }
         },
 
+        // Aggiungere nuovo contatto
+        addNewContact() {
+            const newContact = {};
+            if (this.newContactName.trim() !== '' && this.newContactPicURL.trim() !== '') {
+                newContact.name = this.newContactName;
+                newContact.avatar = this.newContactPicURL;
+                newContact.visible = true;
+                newContact.messages = [];
+                newContact.index = this.mappedContactList.length;
+                this.copiedContactList.push(newContact);
+            }
+            this.newContactName = "";
+            this.newContactPicURL = "";
+        },
+
+        // Torna alla lista contatti in mobile cliccando sul chevron
+        backToList() {
+            if (window.matchMedia('only screen and (max-width: 991px)').matches) {
+                this.leftColShow = !this.leftColShow;
+                this.rightColShow = !this.rightColShow;
+                this.areYouInChat = false;
+            }
+        },
+
+        // Aumentare il font size della pagina
         changeFont() {
             this.biggerFont = !this.biggerFont;
         },
 
+        // Passare al tema dark
+        changeTheme() {
+            if (this.appTheme === "light-theme") {
+                this.appTheme = "dark-theme";
+            } else {
+                this.appTheme = "light-theme";
+            }
+        },
+
+        // Copia la lista dei contatti
+        copyContactList() {
+            this.copiedContactList = [...this.contacts];
+        },
+
+        // Crea uno stato per ogni messaggio per mostrare o meno il menu a tendina delle opzioni
+        createStates() {
+            this.optionMessageShower = [];
+            this.mappedContactList[this.currentContactIndex].messages.forEach((message, index) => {
+                const state = false;
+                this.optionMessageShower.push(state);
+            });
+        },
+
+        // Elimina tutti i messaggi del contatto corrente
+        deleteAllMessages() {
+            this.mappedContactList[this.currentContactIndex].messages.splice(0, this.mappedContactList[this.currentContactIndex].messages.length);
+            this.createStates();
+        },
+
+        // Elimina il contatto corrente
+        deleteContact(index) {
+            this.mappedContactList.splice(index, 1);
+        },
+
+        // Elimina singolo messaggio
+        deleteMessage(index) {
+            this.mappedContactList[this.currentContactIndex].messages.splice(index, 1);
+            this.getLastAccess();
+            this.createStates();
+            const orarioLastMessage = new Date(this.mappedContactList[this.currentContactIndex].messages[index].date);
+            const userLatestAccess = new Date(this.mappedContactList[this.currentContactIndex].lastAccess);
+            if (orarioLastMessage > userLatestAccess) {
+                this.mappedContactList[this.currentContactIndex].lastAccess = orarioLastMessage;
+            }
+        },
+
+        // Estrai ora e minuti dalla stringa della data
+        extractTime(actualDate) {
+            const time = actualDate.slice(11, -3);
+            return time;
+        },
+
+        // Filtra i contatti con searchbar
+        filteredContacts() {
+            if (this.searchModel.trim() !== '') {
+                const filteredContactList = this.mappedContactList.filter((contact) =>
+                    contact.name.toLowerCase().startsWith(this.searchModel.toLowerCase()));
+                return filteredContactList;
+            } else {
+                return this.mappedContactList;
+            }
+        },
+
+        // Ottieni ultimo accesso del contatto corrente
+        getLastAccess() {
+            const reversed = [...this.mappedContactList[this.currentContactIndex].messages].reverse();
+            reversed.every(element => {
+                if (element.status === 'received') {
+                    this.latestAccess = this.extractTime(element.date);
+                    return false;
+                }
+                return true;
+            });
+        },
+
+        // Nascondi splash screen
         hideSplashScreen() {
             this.splashScreenHider = true;
         },
 
+        // Nascondi messaggio di benvenuto
         hideWelcomeMessage() {
             this.welcomeMessageHider = true;
         },
 
-        showContact(index) {
-            this.currentContactIndex = index;
-            this.createStates();
-            this.welcomeMessage = false;
-            if (window.matchMedia('only screen and (max-width: 991px)').matches) {
-                this.areYouInChatMobile = true;
-            }
-            this.searchModel = "";
+        // Mappa i contatti e aggiungi key per tracciare e key per ultimo accesso
+        mapContacts() {
+            this.mappedContactList = this.copiedContactList.map((contact, index) => {
+                const originalIndex = index;
+                const lastAccess = this.extractTime(this.copiedContactList[this.currentContactIndex].messages[this.copiedContactList[this.currentContactIndex].messages.length - 1].date);
+                contact.lastAccess = lastAccess;
+                contact.index = originalIndex;
+                return contact;
+            });
         },
 
-        addNewContact() {
-            const newContact = {};
-            newContact.name = this.newContactName;
-            newContact.avatar = this.newContactPicURL;
-            newContact.visible = true;
-            newContact.messages = [];
-            /*  const newMessage = {};
-             newMessage.date = '10/01/2020 15:30:55';
-             newMessage.message = 'Hai portato a spasso il cane?';
-             newMessage.status = 'sent';
-             newContact.messages.push(newMessage); */
-            newContact.index = this.mappedContactList.length;
-            this.copiedContactList.push(newContact);
-            this.newContactName = "";
-            this.newContactPicURL = "";
-
+        // Funzioni di timeout quando si riceve il messaggio
+        receiveMessage() {
+            setTimeout(function () { this.isSendingMessage = "online"; }.bind(this), 1000);
+            setTimeout(function () { this.isSendingMessage = "sta scrivendo..."; }.bind(this), 2000);
+            setTimeout(function () { this.isSendingMessage = "online"; }.bind(this), 4000);
+            setTimeout(function () { this.isSendingMessage = ""; }.bind(this), 6000);
         },
 
+        // Scrolla fino al messaggio più recente
+        scrollToBottom() {
+            const latestMessage = document.querySelector(".where-is-the-bottom");
+            latestMessage.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        },
+
+        // Manda un messaggio
         sendMessage(message, status) {
             const newMessage = {};
             if (message.trim() !== '') {
@@ -266,144 +370,38 @@ createApp({
                 newMessage.status = status;
                 this.mappedContactList[this.currentContactIndex].messages.push(newMessage);
                 this.newMessageText = "";
-                setTimeout(function () { this.scrollToBottom() }.bind(this), 10)
+                setTimeout(function () { this.scrollToBottom(); }.bind(this), 10);
 
                 if (status === 'sent') {
-                    setTimeout(function () { this.sendMessage(this.randomQuotes[Math.floor(Math.random() * 10)], 'received') }.bind(this), 4000)
+                    setTimeout(function () { this.sendMessage(this.randomQuotes[Math.floor(Math.random() * 10)], 'received'); }.bind(this), 4000);
                 } else {
-                    this.mappedContactList[this.currentContactIndex].lastAccess = `${padL(dt.getHours())}:${padL(dt.getMinutes())}`
+                    this.mappedContactList[this.currentContactIndex].lastAccess = `${padL(dt.getHours())}:${padL(dt.getMinutes())}`;
                 }
-
             }
-
         },
 
-        receiveMessage() {
-            setTimeout(function () { this.isSendingMessage = "online" }.bind(this), 1000);
-            setTimeout(function () { this.isSendingMessage = "sta scrivendo..." }.bind(this), 2000)
-            setTimeout(function () { this.isSendingMessage = "online" }.bind(this), 4000);
-            setTimeout(function () { this.isSendingMessage = "" }.bind(this), 6000);
-        },
-
-        backToList() {
+        // Mostra chat contatto
+        showContact(index) {
+            this.currentContactIndex = index;
+            this.createStates();
+            this.welcomeMessage = false;
             if (window.matchMedia('only screen and (max-width: 991px)').matches) {
-                this.leftColShow = !this.leftColShow;
-                this.rightColShow = !this.rightColShow;
-                this.areYouInChat = false;
+                this.areYouInChatMobile = true;
             }
+            this.searchModel = "";
         },
 
-        adaptToScreen() {
-
-            if (window.matchMedia('only screen and (min-width: 992px)').matches) {
-                this.rightColShow = true;
-                this.leftColShow = true;
-
-            } else {
-                if (this.areYouInChatMobile === true) {
-                    this.rightColShow = true;
-                    this.leftColShow = false;
-                } else {
-                    this.rightColShow = false;
-                }
-
-            }
-        },
-
-        extractTime(actualDate) {
-            const time = actualDate.slice(11, -3);
-            return time;
-        },
-
-        getLastAccess() {
-
-            const reversed = [...this.mappedContactList[this.currentContactIndex].messages].reverse();
-
-            reversed.every(element => {
-                if (element.status === 'received') {
-                    this.latestAccess = this.extractTime(element.date);
-
-                    return false;
-                }
-                return true;
-
-            });
-        },
-
-        copyContactList() {
-            this.copiedContactList = [...this.contacts]
-
-
-        },
-
-        mapContacts() {
-            this.mappedContactList = this.copiedContactList.map((contact, index) => {
-                const originalIndex = index;
-                const lastAccess = this.extractTime(this.copiedContactList[this.currentContactIndex].messages[this.copiedContactList[this.currentContactIndex].messages.length
-                    - 1].date);
-                contact.lastAccess = lastAccess;
-                contact.index = originalIndex;
-                return contact
-            });
-        },
-
-
-        scrollToBottom() {
-            const latestMessage = document.querySelector(".where-is-the-bottom");
-            latestMessage.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }
-        ,
-
-        filteredContacts() {
-            if (this.searchModel.trim() !== '') {
-                const filteredContactList = this.mappedContactList.filter((contact) =>
-                    contact.name.toLowerCase().startsWith(this.searchModel.toLowerCase()));
-                return filteredContactList
-            } else {
-                return this.mappedContactList;
-            }
-        },
-
-        createStates() {
-            this.optionShower = [];
-            this.mappedContactList[this.currentContactIndex].messages.forEach((message, index) => {
-                const state = false;
-                this.optionShower.push(state);
-            })
-        },
-
-        showOptions(index) {
-            this.currentMessageIndex = index;
-            this.optionShower[index] = !this.optionShower[index];
-
-        },
-
+        // Mostra opzioni contatto
         showContactOptions() {
             this.contactOptionShower = !this.contactOptionShower;
-
         },
 
-        deleteMessage(index) {
-            this.mappedContactList[this.currentContactIndex].messages.splice(index, 1);
-            this.getLastAccess();
-            this.createStates();
-
-            const orarioLastMessage = new Date(this.mappedContactList[this.currentContactIndex].messages[index].date);
-            const userLatestAccess = new Date(this.mappedContactList[this.currentContactIndex].lastAccess);
-            if (orarioLastMessage > userLatestAccess) {
-                this.mappedContactList[this.currentContactIndex].lastAccess = orarioLastMessage;
-            }
-
+        // Mostra opzioni messaggio
+        showMessageOptions(index) {
+            this.currentMessageIndex = index;
+            this.optionMessageShower[index] = !this.optionMessageShower[index];
         },
 
-        deleteAllMessages() {
-            this.mappedContactList[this.currentContactIndex].messages.splice(0, this.mappedContactList[this.currentContactIndex].messages.length);
-            this.createStates();
-        },
-
-        deleteContact(index) {
-            this.mappedContactList.splice(index, 1);
-        },
 
     },
 
@@ -413,8 +411,6 @@ createApp({
         this.copyContactList()
         this.mapContacts();
         this.createStates();
-
         setTimeout(this.hideSplashScreen, 1000)
-
     }
 }).mount('#app')
