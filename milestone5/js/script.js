@@ -370,13 +370,12 @@ createApp({
                 newMessage.status = status;
                 this.mappedContactList[this.currentContactIndex].messages.push(newMessage);
                 this.newMessageText = "";
-                setTimeout(function () { this.scrollToBottom(); }.bind(this), 10);
-
                 if (status === 'sent') {
                     setTimeout(function () { this.sendMessage(this.randomQuotes[Math.floor(Math.random() * 10)], 'received'); }.bind(this), 4000);
                 } else {
                     this.mappedContactList[this.currentContactIndex].lastAccess = `${padL(dt.getHours())}:${padL(dt.getMinutes())}`;
                 }
+                setTimeout(function () { this.scrollToBottom(); }.bind(this), 10);
             }
         },
 

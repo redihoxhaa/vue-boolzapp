@@ -411,6 +411,7 @@ a {
 
 .main-container .dashboard .col-right .text-bar .fa-paper-plane {
     margin-left: -0.375rem;
+    cursor: pointer;
 }
 
 .main-container .dashboard .col-right .messages-board .board-wrapper {
