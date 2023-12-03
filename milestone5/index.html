@@ -32,18 +32,30 @@
 
 <body>
     <div id="app" v-cloak>
-        <div class="background" :class="appTheme">
+        <div class="background" :class="appTheme, {'biggerFont': biggerFont}">
             <div class="main-container d-flex flex-column justify-content-center align-items-center">
 
-                <!-- Switch theme -->
-                <div class="form-check form-switch mb-3">
-                    <input class="form-check-input" type="checkbox" role="switch" id="themeChange" @click="changeTheme"
-                        checked>
-                    <label v-if="appTheme === 'light-theme'" class="form-check-label" for="themeChange">Light
-                        theme</label>
-                    <label class="form-check-label" for="themeChange" v-else>Dark theme</label>
+                <div class="switchers d-flex gap-5">
+                    <!-- Switch theme -->
+                    <div class="form-check form-switch mb-3">
+                        <input class="form-check-input" type="checkbox" role="switch" id="themeChanger"
+                            @click="changeTheme" checked>
+                        <label v-if="appTheme === 'light-theme'" class="form-check-label" for="themeChanger">Light
+                            theme</label>
+                        <label class="form-check-label" for="themeChanger" v-else>Dark theme</label>
+                    </div>
+                    <!-- Switch theme -->
+
+                    <!-- Switch font -->
+                    <div class="form-check form-switch mb-3">
+                        <input class="form-check-input" type="checkbox" role="switch" id="fontChanger"
+                            @click="changeFont()">
+                        <label v-if="biggerFont === false" class="form-check-label" for="fontChanger">Normal
+                            size</label>
+                        <label class="form-check-label" for="fontChanger" v-else>Blind size</label>
+                    </div>
+                    <!-- Switch font -->
                 </div>
-                <!-- Switch theme -->
 
 
                 <div class="dashboard d-flex" :class="appTheme">
@@ -71,7 +83,7 @@
                         <!-- /Barra info utente -->
 
                         <!-- Sezione notifiche -->
-                        <section class="notification-alert d-flex align-items-center px-3 py-4">
+                        <section class="notification-alert d-flex align-items-center px-3 py-5">
                             <i class="fa-solid fa-bell-slash"></i>
                             <div class="notification-infos d-flex flex-column ms-3">
                                 <span>Ricevi notifiche di nuovi messaggi</span>
@@ -81,14 +93,16 @@
                         <!-- /Sezione notifiche -->
 
                         <!-- Barra di ricerca -->
-                        <section class="search-bar-container d-flex p-2">
-                            <div class="search-bar d-flex align-items-center">
-                                <div class="icon d-flex align-items-center">
-                                    <i class="fa-solid fa-magnifying-glass mx-4"></i>
-                                </div>
-                                <div class="input d-flex align-items-center">
-                                    <input type="text" class="mx-2" placeholder="Cerca o inizia una nuova chat"
-                                        v-model="searchModel">
+                        <section class="search-bar-section">
+                            <div class="input-bar-container d-flex p-2">
+                                <div class="input-bar d-flex align-items-center">
+                                    <div class="icon d-flex align-items-center">
+                                        <i class="fa-solid fa-magnifying-glass mx-4"></i>
+                                    </div>
+                                    <div class="input d-flex align-items-center">
+                                        <input type="text" class="mx-2" placeholder="Cerca o inizia una nuova chat"
+                                            v-model="searchModel">
+                                    </div>
                                 </div>
                             </div>
                         </section>
@@ -98,7 +112,7 @@
                         <ul class="contacts-list">
                             <li v-for="(element, index) in filteredContacts()" class="user-info"
                                 :class="{active: currentContactIndex === index}"
-                                @click="showContact(element.index); backToList(); hideWelcomeMessage()">
+                                @click="showContact(element.index); backToList(); hideWelcomeMessage();">
                                 <div class="visibility-wrapper d-flex py-2 ps-4 pe-2" v-show="element.visible">
                                     <div class="pic-container">
                                         <img :src="element.avatar" :alt="`Avatar ${index + 1}`">
@@ -107,12 +121,11 @@
                                         <span class="user-name">{{element.name}}</span>
                                         <div class="relative-wrap">
                                             <span class="last-message absolute-wrap"
-                                                v-if="contacts[currentContactIndex].messages.length > 0">{{element.messages[element.messages.length
+                                                v-if="element.messages.length > 0">{{element.messages[element.messages.length
                                                 - 1].message}}</span>
                                         </div>
                                     </div>
-                                    <div class="last-message-time"
-                                        v-if="contacts[currentContactIndex].messages.length > 0">
+                                    <div class="last-message-time" v-if="element.messages.length > 0">
                                         {{extractTime(element.messages[element.messages.length
                                         - 1].date)}}
                                     </div>
@@ -120,6 +133,48 @@
                             </li>
                         </ul>
                         <!-- /Lista contatti e chat -->
+
+                        <!-- Sezione aggiungi contatto -->
+                        <section class="add-contact">
+                            <div
+                                class="add-contact-container d-flex flex-column justify-content-center align-items-center p-3 gap-1">
+
+                                <!-- Aggiunta nome contatto -->
+                                <div class="input-bar-container d-flex p-2">
+                                    <div class="input-bar d-flex align-items-center">
+                                        <div class="icon d-flex align-items-center">
+                                            <i class="fa-solid fa-user mx-4"></i>
+                                        </div>
+                                        <div class="input d-flex align-items-center">
+                                            <input type="text" class="mx-2" placeholder="Nome nuovo contatto"
+                                                v-model="newContactName">
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- /Aggiunta nome contatto -->
+
+                                <!-- Aggiunta foto contatto -->
+                                <div class="input-bar-container d-flex p-2">
+                                    <div class="input-bar d-flex align-items-center">
+                                        <div class="icon d-flex align-items-center">
+                                            <i class="fa-solid fa-image mx-4"></i>
+                                        </div>
+                                        <div class="input d-flex align-items-center">
+                                            <input type="text" class="mx-2" placeholder="URL foto profilo"
+                                                v-model="newContactPicURL">
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- /Aggiunta foto contatto -->
+
+                                <button type="button" class="btn btn-success my-3"
+                                    @click="addNewContact(); mapContacts(); filteredContacts();">Aggiungi
+                                    contatto</button>
+
+                            </div>
+                        </section>
+                        <!-- /Sezione aggiungi contatto -->
+
                     </div>
                     <!-- /Colonna sinistra dashboard -->
 
@@ -129,7 +184,8 @@
 
 
                         <!-- Info del contact -->
-                        <div class="contact-info d-flex align-items-center py-2 px-3">
+                        <div class="contact-info d-flex align-items-center py-2 px-3"
+                            v-if="welcomeMessageHider === true">
                             <i class="fa-solid fa-chevron-left me-3" @click="backToList()"></i>
                             <div class="pic-container">
                                 <img :src="contacts[currentContactIndex].avatar"
@@ -137,12 +193,14 @@
                             </div>
                             <div class="chat-info d-flex flex-column ms-3">
                                 <span class="user-name">{{contacts[currentContactIndex].name}}</span>
-                                <span class="last-access"
-                                    v-if="contacts[currentContactIndex].messages.length > 0">Ultimo
-                                    accesso oggi alle
-                                    {{extractTime(contacts[currentContactIndex].messages[contacts[currentContactIndex].messages.length
-                                    - 1].date)}}
-                                </span>
+                                <div class="last-access" v-if="contacts[currentContactIndex].messages.length > 0">
+                                    <span v-if="isSendingMessage === ''">
+                                        Ultimo accesso oggi alle {{getLastAccess()}}
+
+                                    </span>
+                                    <span v-else>{{isSendingMessage}}</span>
+
+                                </div>
                             </div>
                             <ul class="control-icons d-flex gap-3">
                                 <li><i class="fa-solid fa-magnifying-glass"></i></li>
@@ -168,7 +226,8 @@
                                         <div v-show="optionShower[index]" class="message-options">
                                             <ul class="options-wrapper d-flex flex-column justify-content-center">
                                                 <li class="mb-3">Message Info</li>
-                                                <li @click.stop="deleteMessage(index)">Delete message</li>
+                                                <li @click.stop="deleteMessage(index); deleteUselessContact()">Delete
+                                                    message</li>
                                             </ul>
 
                                         </div>
@@ -177,26 +236,26 @@
                                         </div>
                                         <i class="fa-solid fa-chevron-down" @click="showOptions(index)"></i>
                                     </li>
-
+                                    <li class="where-is-the-bottom"></li>
                                 </ul>
+
                                 <div v-else>Non hai messaggi da visualizzare, scrivi subito a
                                     {{contacts[currentContactIndex].name}} 😃</div>
+
                             </div>
                             <div class="welcome-message text-center p-5" v-else>Benvenuto su Boolzap! Clicca su una chat
-                                per
-                                visualizzare
-                                una conversazione!</div>
-
+                                per visualizzare una conversazione!</div>
                         </div>
                         <!-- /Board dei messaggi inviati e ricevuti -->
 
                         <!-- Input per messaggio -->
-                        <div class="text-bar d-flex align-items-center py-2">
+                        <div class="text-bar d-flex align-items-center py-2" v-if="welcomeMessageHider === true">
                             <i class="fa-regular fa-face-smile px-5"></i>
                             <input type="text" placeholder="Scrivi un messaggio"
-                                @keydown.enter="sendMessage(newMessageText, 'sent')" v-model="newMessageText">
+                                @keydown.enter="sendMessage(newMessageText, 'sent'); receiveMessage()"
+                                v-model="newMessageText">
                             <i class="fa-solid fa-paper-plane px-5" v-show="newMessageText.length > 0"
-                                @click="sendMessage(newMessageText, 'sent')"></i>
+                                @click="sendMessage(newMessageText, 'sent'); receiveMessage()"></i>
                             <i class="fa-solid fa-microphone px-5" v-show="newMessageText.length === 0"></i>
                         </div>
                         <!-- /Input per messaggio -->

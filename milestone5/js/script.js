@@ -8,6 +8,11 @@ createApp({
     data() {
         return {
             appTheme: "light-theme",
+            areYouInChatMobile: false,
+            newContactName: "",
+            newContactPicURL: "",
+            biggerFont: false,
+            isSendingMessage: "",
             welcomeMessageHider: false,
             splashScreenHider: false,
             leftColShow: true,
@@ -208,6 +213,10 @@ createApp({
             }
         },
 
+        changeFont() {
+            this.biggerFont = !this.biggerFont;
+        },
+
         hideSplashScreen() {
             this.splashScreenHider = true;
         },
@@ -220,6 +229,32 @@ createApp({
             this.currentContactIndex = index;
             this.createStates();
             this.welcomeMessage = false;
+            if (window.matchMedia('only screen and (max-width: 991px)').matches) {
+                this.areYouInChatMobile = true;
+            }
+        },
+
+        deleteUselessContact() {
+            if (this.contacts[this.currentContactIndex].messages.length === 0) {
+                this.contacts.splice(this.currentContactIndex, 1);
+            }
+            this.mapContacts();
+            this.filteredContacts();
+        },
+
+        addNewContact() {
+            const newContact = {};
+            newContact.name = this.newContactName;
+            newContact.avatar = this.newContactPicURL;
+            newContact.visible = true;
+            newContact.messages = [];
+            /*  const newMessage = {};
+             newMessage.date = '10/01/2020 15:30:55';
+             newMessage.message = 'Hai portato a spasso il cane?';
+             newMessage.status = 'sent';
+             newContact.messages.push(newMessage); */
+            newContact.index = this.contacts.length;
+            this.contacts.push(newContact);
         },
 
         sendMessage(message, status) {
@@ -235,26 +270,42 @@ createApp({
                 setTimeout(function () { this.scrollToBottom() }.bind(this), 10)
 
                 if (status === 'sent') {
-                    setTimeout(function () { this.sendMessage(this.randomQuotes[Math.floor(Math.random() * 10)], 'received') }.bind(this), 1000)
+                    setTimeout(function () { this.sendMessage(this.randomQuotes[Math.floor(Math.random() * 10)], 'received') }.bind(this), 4000)
                 }
 
             }
 
         },
 
+        receiveMessage() {
+            setTimeout(function () { this.isSendingMessage = "online" }.bind(this), 1000);
+            setTimeout(function () { this.isSendingMessage = "sta scrivendo..." }.bind(this), 2000)
+            setTimeout(function () { this.isSendingMessage = "online" }.bind(this), 4000);
+            setTimeout(function () { this.isSendingMessage = "" }.bind(this), 6000)
+        },
+
         backToList() {
-            if (window.matchMedia('only screen and (max-width: 992px)').matches) {
+            if (window.matchMedia('only screen and (max-width: 991px)').matches) {
                 this.leftColShow = !this.leftColShow;
                 this.rightColShow = !this.rightColShow;
+                this.areYouInChat = false;
             }
         },
 
         adaptToScreen() {
+
             if (window.matchMedia('only screen and (min-width: 992px)').matches) {
                 this.rightColShow = true;
+                this.leftColShow = true;
 
             } else {
-                this.rightColShow = false;
+                if (this.areYouInChatMobile === true) {
+                    this.rightColShow = true;
+                    this.leftColShow = false;
+                } else {
+                    this.rightColShow = false;
+                }
+
             }
         },
 
@@ -263,9 +314,26 @@ createApp({
             return time;
         },
 
+        getLastAccess() {
+
+            const reversed = [...this.mappedContactList[this.currentContactIndex].messages].reverse();
+            reversed.every(element => {
+                if (element.status === 'received') {
+                    const latestAccess = this.extractTime(element.date);
+                    console.log(latestAccess);
+                    return latestAccess;
+                }
+                return true;
+
+            });
+        },
+
         mapContacts() {
             this.mappedContactList = this.contacts.map((contact, index) => {
                 const originalIndex = index;
+                /* const lastAccess = this.extractTime(this.contacts[this.currentContactIndex].messages[this.contacts[this.currentContactIndex].messages.length
+                    - 1].date);
+                contact.lastAccess = lastAccess; */
                 contact.index = originalIndex;
                 return contact
             });
@@ -273,8 +341,8 @@ createApp({
 
 
         scrollToBottom() {
-            const latestMessage = document.querySelector(".latest-message");
-            latestMessage.scrollIntoView({ behavior: 'smooth', block: 'end', inline: 'nearest' });
+            const latestMessage = document.querySelector(".where-is-the-bottom");
+            latestMessage.scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
         ,
 
@@ -315,6 +383,7 @@ createApp({
         window.addEventListener('resize', this.adaptToScreen);
         this.mapContacts();
         this.createStates();
+
         setTimeout(this.hideSplashScreen, 1000)
     }
 }).mount('#app')
