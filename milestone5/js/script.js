@@ -281,6 +281,7 @@ createApp({
         // Elimina il contatto corrente
         deleteContact(index) {
             this.copiedContactList.splice(index, 1);
+            this.welcomeMessageHider = false;
             this.mapContacts();
         },
 

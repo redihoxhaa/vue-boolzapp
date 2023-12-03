@@ -185,7 +185,7 @@
 
                         <!-- Info del contact -->
                         <div class="contact-info d-flex align-items-center py-2 px-3"
-                            v-if="welcomeMessageHider === true">
+                            v-if="welcomeMessageHider === true && mappedContactList.length > 0 ">
                             <i class="fa-solid fa-chevron-left me-3" @click="backToList()"></i>
                             <div class="pic-container">
                                 <img :src="mappedContactList[currentContactIndex].avatar"
@@ -224,7 +224,7 @@
                         <!-- Board dei messaggi inviati e ricevuti -->
                         <div class="messages-board d-flex align-items-center justify-content-center">
                             <div class="board-wrapper d-flex flex-column justify-content-center align-items-center"
-                                v-if="welcomeMessageHider === true">
+                                v-if="welcomeMessageHider === true && mappedContactList.length > 0">
                                 <ul class="padded-container d-flex flex-column align-item"
                                     v-if="mappedContactList[currentContactIndex].messages.length > 0">
                                     <li v-for="(element, index) in mappedContactList[currentContactIndex].messages"
