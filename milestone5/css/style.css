@@ -189,7 +189,8 @@ a {
     white-space: nowrap;
 }
 
-.message-options {
+.message-options,
+.contact-options {
     position: absolute;
     bottom: -5.625rem;
     right: 1.875rem;
@@ -199,6 +200,14 @@ a {
     border-radius: .3125rem;
     box-shadow: .0625rem .0625rem .625rem rgba(0, 0, 0, 0.2);
     cursor: pointer;
+
+}
+
+.contact-options {
+    font-size: 16px;
+    font-weight: normal;
+    color: var(--text-color-primary);
+    font-family: 'Lato', sans-serif;
 
 }
 
@@ -380,6 +389,11 @@ a {
     display: none;
     cursor: pointer;
 
+}
+
+.main-container .dashboard .col-right .contact-info .fa-ellipsis-vertical {
+    position: relative;
+    cursor: pointer;
 }
 
 .main-container .dashboard .col-right .messages-board {

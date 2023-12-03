@@ -7,6 +7,9 @@ const { createApp } = Vue;
 createApp({
     data() {
         return {
+            contactOptionShower: false,
+            copiedContactList: [],
+            latestAccess: "",
             appTheme: "light-theme",
             areYouInChatMobile: false,
             newContactName: "",
@@ -232,14 +235,7 @@ createApp({
             if (window.matchMedia('only screen and (max-width: 991px)').matches) {
                 this.areYouInChatMobile = true;
             }
-        },
-
-        deleteUselessContact() {
-            if (this.contacts[this.currentContactIndex].messages.length === 0) {
-                this.contacts.splice(this.currentContactIndex, 1);
-            }
-            this.mapContacts();
-            this.filteredContacts();
+            this.searchModel = "";
         },
 
         addNewContact() {
@@ -253,8 +249,11 @@ createApp({
              newMessage.message = 'Hai portato a spasso il cane?';
              newMessage.status = 'sent';
              newContact.messages.push(newMessage); */
-            newContact.index = this.contacts.length;
-            this.contacts.push(newContact);
+            newContact.index = this.mappedContactList.length;
+            this.copiedContactList.push(newContact);
+            this.newContactName = "";
+            this.newContactPicURL = "";
+
         },
 
         sendMessage(message, status) {
@@ -265,12 +264,14 @@ createApp({
                 newMessage.date = `${padL(dt.getMonth() + 1)}/${padL(dt.getDate())}/${dt.getFullYear()} ${padL(dt.getHours())}:${padL(dt.getMinutes())}:${padL(dt.getSeconds())}`;
                 newMessage.message = message;
                 newMessage.status = status;
-                this.contacts[this.currentContactIndex].messages.push(newMessage);
+                this.mappedContactList[this.currentContactIndex].messages.push(newMessage);
                 this.newMessageText = "";
                 setTimeout(function () { this.scrollToBottom() }.bind(this), 10)
 
                 if (status === 'sent') {
                     setTimeout(function () { this.sendMessage(this.randomQuotes[Math.floor(Math.random() * 10)], 'received') }.bind(this), 4000)
+                } else {
+                    this.mappedContactList[this.currentContactIndex].lastAccess = `${padL(dt.getHours())}:${padL(dt.getMinutes())}`
                 }
 
             }
@@ -281,7 +282,7 @@ createApp({
             setTimeout(function () { this.isSendingMessage = "online" }.bind(this), 1000);
             setTimeout(function () { this.isSendingMessage = "sta scrivendo..." }.bind(this), 2000)
             setTimeout(function () { this.isSendingMessage = "online" }.bind(this), 4000);
-            setTimeout(function () { this.isSendingMessage = "" }.bind(this), 6000)
+            setTimeout(function () { this.isSendingMessage = "" }.bind(this), 6000);
         },
 
         backToList() {
@@ -317,23 +318,30 @@ createApp({
         getLastAccess() {
 
             const reversed = [...this.mappedContactList[this.currentContactIndex].messages].reverse();
+
             reversed.every(element => {
                 if (element.status === 'received') {
-                    const latestAccess = this.extractTime(element.date);
-                    console.log(latestAccess);
-                    return latestAccess;
+                    this.latestAccess = this.extractTime(element.date);
+
+                    return false;
                 }
                 return true;
 
             });
         },
 
+        copyContactList() {
+            this.copiedContactList = [...this.contacts]
+
+
+        },
+
         mapContacts() {
-            this.mappedContactList = this.contacts.map((contact, index) => {
+            this.mappedContactList = this.copiedContactList.map((contact, index) => {
                 const originalIndex = index;
-                /* const lastAccess = this.extractTime(this.contacts[this.currentContactIndex].messages[this.contacts[this.currentContactIndex].messages.length
+                const lastAccess = this.extractTime(this.copiedContactList[this.currentContactIndex].messages[this.copiedContactList[this.currentContactIndex].messages.length
                     - 1].date);
-                contact.lastAccess = lastAccess; */
+                contact.lastAccess = lastAccess;
                 contact.index = originalIndex;
                 return contact
             });
@@ -350,7 +358,6 @@ createApp({
             if (this.searchModel.trim() !== '') {
                 const filteredContactList = this.mappedContactList.filter((contact) =>
                     contact.name.toLowerCase().startsWith(this.searchModel.toLowerCase()));
-                console.log(filteredContactList);
                 return filteredContactList
             } else {
                 return this.mappedContactList;
@@ -359,7 +366,7 @@ createApp({
 
         createStates() {
             this.optionShower = [];
-            this.contacts[this.currentContactIndex].messages.forEach((message, index) => {
+            this.mappedContactList[this.currentContactIndex].messages.forEach((message, index) => {
                 const state = false;
                 this.optionShower.push(state);
             })
@@ -371,9 +378,31 @@ createApp({
 
         },
 
+        showContactOptions() {
+            this.contactOptionShower = !this.contactOptionShower;
+
+        },
+
         deleteMessage(index) {
-            this.contacts[this.currentContactIndex].messages.splice(index, 1);
+            this.mappedContactList[this.currentContactIndex].messages.splice(index, 1);
+            this.getLastAccess();
             this.createStates();
+
+            const orarioLastMessage = new Date(this.mappedContactList[this.currentContactIndex].messages[index].date);
+            const userLatestAccess = new Date(this.mappedContactList[this.currentContactIndex].lastAccess);
+            if (orarioLastMessage > userLatestAccess) {
+                this.mappedContactList[this.currentContactIndex].lastAccess = orarioLastMessage;
+            }
+
+        },
+
+        deleteAllMessages() {
+            this.mappedContactList[this.currentContactIndex].messages.splice(0, this.mappedContactList[this.currentContactIndex].messages.length);
+            this.createStates();
+        },
+
+        deleteContact(index) {
+            this.mappedContactList.splice(index, 1);
         },
 
     },
@@ -381,9 +410,11 @@ createApp({
     mounted() {
         this.adaptToScreen();
         window.addEventListener('resize', this.adaptToScreen);
+        this.copyContactList()
         this.mapContacts();
         this.createStates();
 
         setTimeout(this.hideSplashScreen, 1000)
+
     }
 }).mount('#app')

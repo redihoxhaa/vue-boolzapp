@@ -112,7 +112,7 @@
                         <ul class="contacts-list">
                             <li v-for="(element, index) in filteredContacts()" class="user-info"
                                 :class="{active: currentContactIndex === index}"
-                                @click="showContact(element.index); backToList(); hideWelcomeMessage();">
+                                @click="showContact(element.index); backToList(); hideWelcomeMessage(); getLastAccess()">
                                 <div class="visibility-wrapper d-flex py-2 ps-4 pe-2" v-show="element.visible">
                                     <div class="pic-container">
                                         <img :src="element.avatar" :alt="`Avatar ${index + 1}`">
@@ -188,14 +188,15 @@
                             v-if="welcomeMessageHider === true">
                             <i class="fa-solid fa-chevron-left me-3" @click="backToList()"></i>
                             <div class="pic-container">
-                                <img :src="contacts[currentContactIndex].avatar"
-                                    :alt="'Avatar ${contacts[currentContactIndex].name}'">
+                                <img :src="mappedContactList[currentContactIndex].avatar"
+                                    :alt="'Avatar ${mappedContactList[currentContactIndex].name}'">
                             </div>
                             <div class="chat-info d-flex flex-column ms-3">
-                                <span class="user-name">{{contacts[currentContactIndex].name}}</span>
-                                <div class="last-access" v-if="contacts[currentContactIndex].messages.length > 0">
+                                <span class="user-name">{{mappedContactList[currentContactIndex].name}}</span>
+                                <div class="last-access"
+                                    v-if="mappedContactList[currentContactIndex].messages.length > 0">
                                     <span v-if="isSendingMessage === ''">
-                                        Ultimo accesso oggi alle {{getLastAccess()}}
+                                        Ultimo accesso oggi alle {{mappedContactList[currentContactIndex].lastAccess}}
 
                                     </span>
                                     <span v-else>{{isSendingMessage}}</span>
@@ -205,7 +206,17 @@
                             <ul class="control-icons d-flex gap-3">
                                 <li><i class="fa-solid fa-magnifying-glass"></i></li>
                                 <li><i class="fa-solid fa-paperclip"></i></li>
-                                <li><i class="fa-solid fa-ellipsis-vertical mx-1"></i></li>
+                                <li><i class="fa-solid fa-ellipsis-vertical mx-1" @click="showContactOptions">
+                                        <div v-show="contactOptionShower" class="contact-options">
+                                            <ul class="options-wrapper d-flex flex-column justify-content-center">
+                                                <li class="mb-3" @click="deleteAllMessages()">Elimina messaggi</li>
+                                                <li
+                                                    @click="deleteContact(mappedContactList[currentContactIndex].index)">
+                                                    Elimina contatto</li>
+                                            </ul>
+
+                                        </div>
+                                    </i></li>
                             </ul>
                         </div>
                         <!-- /Info del contact -->
@@ -215,10 +226,10 @@
                             <div class="board-wrapper d-flex flex-column justify-content-center align-items-center"
                                 v-if="welcomeMessageHider === true">
                                 <ul class="padded-container d-flex flex-column align-item"
-                                    v-if="contacts[currentContactIndex].messages.length > 0">
-                                    <li v-for="(element, index) in contacts[currentContactIndex].messages"
+                                    v-if="mappedContactList[currentContactIndex].messages.length > 0">
+                                    <li v-for="(element, index) in mappedContactList[currentContactIndex].messages"
                                         class="message"
-                                        :class="element.status === 'received' ? 'received' : 'sent', index === contacts[currentContactIndex].messages.length - 1 ? 'latest-message' : ''">
+                                        :class="element.status === 'received' ? 'received' : 'sent', index === mappedContactList[currentContactIndex].messages.length - 1 ? 'latest-message' : ''">
                                         {{element.message}}
                                         <div class="current-message-time">
                                             {{extractTime(element.date)}}
@@ -226,7 +237,7 @@
                                         <div v-show="optionShower[index]" class="message-options">
                                             <ul class="options-wrapper d-flex flex-column justify-content-center">
                                                 <li class="mb-3">Message Info</li>
-                                                <li @click.stop="deleteMessage(index); deleteUselessContact()">Delete
+                                                <li @click.stop="deleteMessage(index);">Delete
                                                     message</li>
                                             </ul>
 
@@ -240,7 +251,7 @@
                                 </ul>
 
                                 <div v-else>Non hai messaggi da visualizzare, scrivi subito a
-                                    {{contacts[currentContactIndex].name}} 😃</div>
+                                    {{mappedContactList[currentContactIndex].name}} 😃</div>
 
                             </div>
                             <div class="welcome-message text-center p-5" v-else>Benvenuto su Boolzap! Clicca su una chat
