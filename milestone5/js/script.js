@@ -280,7 +280,8 @@ createApp({
 
         // Elimina il contatto corrente
         deleteContact(index) {
-            this.mappedContactList.splice(index, 1);
+            this.copiedContactList.splice(index, 1);
+            this.mapContacts();
         },
 
         // Elimina singolo messaggio

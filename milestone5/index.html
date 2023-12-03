@@ -210,7 +210,8 @@
                                         <div v-show="contactOptionShower" class="contact-options">
                                             <ul class="options-wrapper d-flex flex-column justify-content-center">
                                                 <li class="mb-3" @click="deleteAllMessages()">Elimina messaggi</li>
-                                                <li @click="deleteContact(currentContactIndex)">
+                                                <li
+                                                    @click="deleteContact(mappedContactList[currentContactIndex].index)">
                                                     Elimina contatto</li>
                                             </ul>
 
